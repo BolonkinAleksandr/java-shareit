@@ -2,16 +2,22 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static ru.practicum.shareit.item.mapper.CommentMapper.toComment;
+import static ru.practicum.shareit.item.mapper.CommentMapper.toCommentDto;
 import static ru.practicum.shareit.item.mapper.ItemMapper.toItem;
 import static ru.practicum.shareit.item.mapper.ItemMapper.toItemDto;
+import static ru.practicum.shareit.item.mapper.ItemWithBookingMapper.toItemWithBookingDto;
 
 @RestController
 @RequestMapping("/items")
@@ -29,18 +35,19 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> readAll(@RequestHeader("X-Sharer-User-Id") long ownerId) {
+    public List<ItemWithBookingDto> readAll(@RequestHeader("X-Sharer-User-Id") long ownerId) {
         List<Item> items = itemService.getAllItems(ownerId);
-        List<ItemDto> dtoItems = new ArrayList<>();
+        List<ItemWithBookingDto> dtoItems = new ArrayList<>();
         for (Item item : items) {
-            dtoItems.add(toItemDto(item));
+            dtoItems.add(toItemWithBookingDto(item));
         }
         return dtoItems;
     }
 
     @GetMapping("/{id}")
-    public ItemDto readItemById(@PathVariable long id) {
-        return toItemDto(itemService.getItemById(id));
+    public ItemWithBookingDto readItemById(@PathVariable long id,
+                                           @RequestHeader(value = "X-Sharer-User-Id") long userId) {
+        return toItemWithBookingDto(itemService.getItemById(id, userId));
     }
 
     @PatchMapping("/{itemId}")
@@ -51,6 +58,9 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestParam(defaultValue = "") String text) {
+        if (text.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<Item> items = itemService.searchItem(text);
         List<ItemDto> dtoItems = new ArrayList<>();
         if (items != null) {
@@ -64,5 +74,12 @@ public class ItemController {
     @DeleteMapping("/{id}")
     public void deleteItem(@PathVariable long id) {
         itemService.deleteItem(id);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@Valid @RequestBody CommentDto commentDto,
+                                    @RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                    @PathVariable long itemId) {
+        return toCommentDto(itemService.createComment(toComment(commentDto), itemId, userId));
     }
 }
