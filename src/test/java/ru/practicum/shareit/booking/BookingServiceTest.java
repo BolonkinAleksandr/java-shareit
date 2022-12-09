@@ -80,7 +80,7 @@ public class BookingServiceTest {
         Mockito.when(itemRepository.existsById(Mockito.anyLong())).thenReturn(true);
         Mockito.when(itemRepository.getReferenceById(Mockito.anyLong())).thenReturn(item);
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
-        Throwable thrown = assertThrows(NotFoundException.class, () -> {bookingService.addBooking(booking, 1);});
+        Throwable thrown = assertThrows(NotFoundException.class, () -> { bookingService.addBooking(booking, 1); });
         Assertions.assertEquals("owner can't booking item", thrown.getMessage());
     }
 
@@ -96,7 +96,7 @@ public class BookingServiceTest {
         Mockito.when(itemRepository.getReferenceById(Mockito.anyLong())).thenReturn(item);
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user2);
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
-        Throwable thrown = assertThrows(CastomException.class, () -> {bookingService.addBooking(booking, 2);});
+        Throwable thrown = assertThrows(CastomException.class, () -> { bookingService.addBooking(booking, 2); });
         Assertions.assertEquals("incorrect data/time", thrown.getMessage());
     }
 
@@ -112,7 +112,7 @@ public class BookingServiceTest {
         Mockito.when(itemRepository.getReferenceById(Mockito.anyLong())).thenReturn(item);
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user2);
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
-        Throwable thrown = assertThrows(CastomException.class, () -> {bookingService.addBooking(booking, 2);});
+        Throwable thrown = assertThrows(CastomException.class, () -> { bookingService.addBooking(booking, 2); });
         Assertions.assertEquals("item is not available", thrown.getMessage());
     }
 
@@ -127,7 +127,7 @@ public class BookingServiceTest {
         Mockito.when(itemRepository.getReferenceById(Mockito.anyLong())).thenReturn(item);
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user2);
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
-        Throwable thrown = assertThrows(NoSuchElementException.class, () -> {bookingService.addBooking(booking, 3);});
+        Throwable thrown = assertThrows(NoSuchElementException.class, () -> { bookingService.addBooking(booking, 3); });
         Assertions.assertEquals("user with id=3 doesn't exist", thrown.getMessage());
     }
 
@@ -142,7 +142,7 @@ public class BookingServiceTest {
         Mockito.when(itemRepository.getReferenceById(Mockito.anyLong())).thenReturn(item);
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user2);
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
-        Throwable thrown = assertThrows(NotFoundException.class, () -> {bookingService.addBooking(booking, 2);});
+        Throwable thrown = assertThrows(NotFoundException.class, () -> { bookingService.addBooking(booking, 2); });
         Assertions.assertEquals("item with id=1 doesn't exist", thrown.getMessage());
     }
 
@@ -170,7 +170,7 @@ public class BookingServiceTest {
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user2);
         Mockito.when(bookingRepository.getReferenceById(Mockito.anyLong())).thenReturn(booking);
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
-        Throwable thrown = assertThrows(NotFoundException.class, () -> {bookingService.bookingApproving(1, true, 2);});
+        Throwable thrown = assertThrows(NotFoundException.class, () -> { bookingService.bookingApproving(1, true, 2); });
         Assertions.assertEquals("only owner can approve", thrown.getMessage());
     }
 
@@ -184,7 +184,7 @@ public class BookingServiceTest {
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user);
         Mockito.when(bookingRepository.getReferenceById(Mockito.anyLong())).thenReturn(booking);
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
-        Throwable thrown = assertThrows(CastomException.class, () -> {bookingService.bookingApproving(1, true, 1);});
+        Throwable thrown = assertThrows(CastomException.class, () -> { bookingService.bookingApproving(1, true, 1); });
         Assertions.assertEquals("booking is approved already", thrown.getMessage());
     }
 
@@ -210,7 +210,7 @@ public class BookingServiceTest {
         Mockito.when(bookingRepository.existsById(Mockito.anyLong())).thenReturn(true);
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user2);
         Mockito.when(bookingRepository.getReferenceById(Mockito.anyLong())).thenReturn(booking);
-        Throwable thrown = assertThrows(NotFoundException.class, () -> {bookingService.getById(1, 2);});
+        Throwable thrown = assertThrows(NotFoundException.class, () -> { bookingService.getById(1, 2); });
         Assertions.assertEquals("only owner or booking author can take a booking information", thrown.getMessage());
     }
 
@@ -223,7 +223,7 @@ public class BookingServiceTest {
         Booking booking = new Booking(1, time.plusHours(1), time.plusDays(2), item, null, Status.APPROVED);
         Mockito.when(userRepository.getReferenceById(Mockito.anyLong())).thenReturn(user2);
         Mockito.when(bookingRepository.getReferenceById(Mockito.anyLong())).thenReturn(booking);
-        Throwable thrown = assertThrows(NotFoundException.class, () -> {bookingService.getById(1, 2);});
+        Throwable thrown = assertThrows(NotFoundException.class, () -> { bookingService.getById(1, 2); });
         Assertions.assertEquals("booking with id=1 doesn't exist", thrown.getMessage());
     }
 
