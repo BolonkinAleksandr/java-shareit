@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 public class ItemRepositoryTest {
-
     @Autowired
     ItemRequestRepository itemRequestRepository;
     @Autowired
@@ -26,9 +25,8 @@ public class ItemRepositoryTest {
     @Autowired
     ItemRepository itemRepository;
 
-
     @Test
-    void search(){
+    void search() {
         var user = new User(1, "user", "email@mail.ru");
         userRepository.save(user);
         var item = new Item(1, "name", "description", true, user,
@@ -37,8 +35,8 @@ public class ItemRepositoryTest {
                 null, null, null, null, null);
         itemRepository.save(item);
         itemRepository.save(item2);
-        Pageable pageable= Pageable.ofSize(10);
-        Page<Item> page = itemRepository.search("des",pageable);
+        Pageable pageable = Pageable.ofSize(10);
+        Page<Item> page = itemRepository.search("des", pageable);
         List<Item> items = page.toList();
         assertNotNull(items);
         assertEquals(1, items.size());
