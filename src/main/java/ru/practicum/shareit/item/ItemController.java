@@ -9,6 +9,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +37,10 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemWithBookingDto> readAll(@RequestHeader("X-Sharer-User-Id") long ownerId) {
-        List<Item> items = itemService.getAllItems(ownerId);
+    public List<ItemWithBookingDto> readAll(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                                            @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
+                                            @RequestParam(name = "size", required = false) @Positive Integer size) {
+        List<Item> items = itemService.getAllItems(ownerId, from, size);
         List<ItemWithBookingDto> dtoItems = new ArrayList<>();
         for (Item item : items) {
             dtoItems.add(toItemWithBookingDto(item));
@@ -57,11 +61,13 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItem(@RequestParam(defaultValue = "") String text) {
+    public List<ItemDto> searchItem(@RequestParam(defaultValue = "") String text,
+                                    @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
+                                    @RequestParam(name = "size", required = false) @Positive Integer size) {
         if (text.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Item> items = itemService.searchItem(text);
+        List<Item> items = itemService.searchItem(text, from, size);
         List<ItemDto> dtoItems = new ArrayList<>();
         if (items != null) {
             for (Item item : items) {

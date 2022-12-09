@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -12,6 +14,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.pageapleCreator.PageableCreater;
+import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
@@ -26,14 +30,18 @@ public class ItemServiceImpl implements ItemService {
     UserRepository userStorage;
     BookingRepository bookingRepository;
     CommentRepository commentRepository;
+    ItemRequestRepository itemRequestRepository;
+    PageableCreater pageableCreater;
 
     @Autowired
     public ItemServiceImpl(ItemRepository itemStorage, UserRepository userStorage, BookingRepository bookingRepository,
-                           CommentRepository commentRepository) {
+                           CommentRepository commentRepository, ItemRequestRepository itemRequestRepository, PageableCreater pageableCreater) {
         this.itemStorage = itemStorage;
         this.userStorage = userStorage;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.itemRequestRepository = itemRequestRepository;
+        this.pageableCreater = pageableCreater;
     }
 
     @Transactional
@@ -42,15 +50,19 @@ public class ItemServiceImpl implements ItemService {
         log.info("add item {}", item);
         checkUserById(ownerId);
         item.setOwner(userStorage.getReferenceById(ownerId));
+        if (item.getRequestId() != null) {
+            item.setRequest(itemRequestRepository.getReferenceById(item.getRequestId()));
+        }
         return itemStorage.save(item);
     }
 
     @Override
-    public List<Item> getAllItems(long id) {
+    public List<Item> getAllItems(long id, Integer from, Integer size) {
         log.info("get items by owner id={}", id);
         checkUserById(id);
-        List<Item> items = itemStorage.findAll();
         List<Item> ownerItems = new ArrayList<>();
+        Pageable pageable = pageableCreater.doPageable(from, size);
+        Page<Item> items = itemStorage.findAllItemsByOwnerId(id, pageable);
         for (Item item : items) {
             if (item.getOwner().getId() == id) {
                 ownerItems.add(addItemBookings(item, id));
@@ -91,9 +103,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> searchItem(String text) {
+    public List<Item> searchItem(String text, Integer from, Integer size) {
         log.info("search item by text: {}", text);
-        return itemStorage.search(text);
+        Pageable pageable = pageableCreater.doPageable(from, size);
+        return itemStorage.search(text, pageable).toList();
     }
 
     @Override
@@ -123,6 +136,11 @@ public class ItemServiceImpl implements ItemService {
         } else {
             throw new CastomException("user can't commenting item that hasn't been booked");
         }
+    }
+
+    @Override
+    public List<Item> findItemsByRequestId(Long requestId) {
+        return itemStorage.findItemsByRequest(itemRequestRepository.getReferenceById(requestId));
     }
 
     private Item addItemBookings(Item item, long userId) {

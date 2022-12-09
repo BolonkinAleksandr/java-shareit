@@ -12,9 +12,6 @@ import static ru.practicum.shareit.item.mapper.CommentMapper.toCommentDto;
 import static ru.practicum.shareit.user.mapper.UserMapper.toUser;
 import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
 
-import static ru.practicum.shareit.request.mapper.ItemRequestMapper.toItemRequestDto;
-import static ru.practicum.shareit.request.mapper.ItemRequestMapper.toItemRequest;
-
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
         List<CommentDto> commentDtoList = new ArrayList<>();
@@ -29,7 +26,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner() != null ? toUserDto(item.getOwner()) : null)
-                .request(item.getRequest() != null ? toItemRequestDto(item.getRequest()) : null)
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .comments(commentDtoList)
                 .build();
     }
@@ -41,10 +38,11 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner() != null ? toUser(item.getOwner()) : null)
-                .request(item.getRequest() != null ? toItemRequest(item.getRequest()) : null)
+                .request(null)
                 .lastBooking(null)
                 .nextBooking(null)
                 .comments(null)
+                .requestId(item.getRequestId() != null ? item.getRequestId() : null)
                 .build();
     }
 }

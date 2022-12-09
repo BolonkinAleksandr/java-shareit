@@ -8,8 +8,8 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.practicum.shareit.booking.mapper.BookingMapper.toBookingForItemDto;
 import static ru.practicum.shareit.item.mapper.CommentMapper.toCommentDto;
-import static ru.practicum.shareit.mapper.BookingMapper.toBookingForItemDto;
 import static ru.practicum.shareit.request.mapper.ItemRequestMapper.toItemRequestDto;
 import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
 

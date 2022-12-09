@@ -1,13 +1,13 @@
-package ru.practicum.shareit.mapper;
+package ru.practicum.shareit.booking.mapper;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingForItemDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 
+import static ru.practicum.shareit.item.mapper.ItemMapper.toItemDto;
 import static ru.practicum.shareit.user.mapper.UserMapper.toUser;
 import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
-import static ru.practicum.shareit.item.mapper.ItemMapper.toItemDto;
 
 public class BookingMapper {
     public static Booking toBooking(BookingDto bookingDto) {
