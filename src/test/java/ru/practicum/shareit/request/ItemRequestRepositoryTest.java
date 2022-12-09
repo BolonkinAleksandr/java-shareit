@@ -25,8 +25,8 @@ public class ItemRequestRepositoryTest {
 
     @Test
     void findAllByOtherUsers() {
-        var user = new User(1L, "user", "email@mail.ru");
-        var user2 = new User(2L, "user2", "email2@mail.ru");
+        User user = new User(1, "user", "email@mail.ru");
+        User user2 = new User(2, "user2", "email2@mail.ru");
         userRepository.save(user);
         userRepository.save(user2);
         var itemRequest = new ItemRequest(1L, "description", user, LocalDateTime.now(), null);

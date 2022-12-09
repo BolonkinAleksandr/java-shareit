@@ -1,7 +1,9 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +11,8 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -28,11 +32,13 @@ public class ItemRequestIntegrationTest {
     private final EntityManager em;
     private final ItemRequestService requestService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Test
     void getUserRequestsTest() {
         User user = new User(1, "userName", "email@mail.ru");
         userService.addUser(user);
+        userRepository.save(user);
         TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
         User userOut = query.setParameter("email", user.getEmail()).getSingleResult();
         ItemRequest itemRequest = new ItemRequest(1, "description", user, LocalDateTime.now(), null);
