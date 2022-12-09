@@ -38,7 +38,7 @@ public class ItemRequestIntegrationTest {
         TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
         User userOut = query.setParameter("email", user.getEmail()).getSingleResult();
         ItemRequest itemRequest = new ItemRequest(1, "description", userOut, LocalDateTime.now(), null);
-        requestService.addRequest(itemRequest, user.getId());
+        requestService.addRequest(itemRequest, userOut.getId());
         TypedQuery<ItemRequest> query2 = em.createQuery("Select ir from ItemRequest ir where ir.requester.id = :requester_id",
                 ItemRequest.class);
         ItemRequest itemRequestOut = query2.setParameter("requester_id", userOut.getId()).getSingleResult();
