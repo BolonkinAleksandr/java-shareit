@@ -37,11 +37,11 @@ public class ItemRequestIntegrationTest {
         User userOut = query.setParameter("id", user.getId()).getSingleResult();
         ItemRequest itemRequest = new ItemRequest(1, "description", user, LocalDateTime.now(), null);
         requestService.addRequest(itemRequest, user.getId());
-        TypedQuery<ItemRequest> query2 = em.createQuery("Select ir from ItemRequest ir where ir.requester.id = :requester_id"
-                , ItemRequest.class);
-        ItemRequest ItemRequestOut = query2.setParameter("requester_id", userOut.getId()).getSingleResult();
-        assertThat(ItemRequestOut.getId(), equalTo(itemRequest.getId()));
-        assertThat(ItemRequestOut.getDescription(), equalTo(itemRequest.getDescription()));
+        TypedQuery<ItemRequest> query2 = em.createQuery("Select ir from ItemRequest ir where ir.requester.id = :requester_id",
+                ItemRequest.class);
+        ItemRequest itemRequestOut = query2.setParameter("requester_id", userOut.getId()).getSingleResult();
+        assertThat(itemRequestOut.getId(), equalTo(itemRequest.getId()));
+        assertThat(itemRequestOut.getDescription(), equalTo(itemRequest.getDescription()));
         List<ItemRequest> itemRequests = requestService.getUserRequests(userOut.getId());
         assertThat(itemRequests.size(), equalTo(1));
         assertThat(itemRequests.get(0).getDescription(), equalTo(itemRequest.getDescription()));
