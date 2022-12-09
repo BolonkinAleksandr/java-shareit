@@ -15,10 +15,6 @@ public class PageableCreater {
             pageable = PageRequest.of(0, 10);
         } else if (from < 0 || size < 0) {
             throw new ValidationException("incorrect parameters of pageable");
-        } else if (from < 0) {
-            pageable = PageRequest.of(0, size);
-        } else if (size < 0) {
-            pageable = PageRequest.of(from / 10, 10);
         } else {
             pageable = PageRequest.of(from / size, size);
         }
