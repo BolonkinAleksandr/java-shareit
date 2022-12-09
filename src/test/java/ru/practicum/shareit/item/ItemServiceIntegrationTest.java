@@ -33,8 +33,8 @@ public class ItemServiceIntegrationTest {
     void getAllItemsTest() {
         User user = new User(1, "userName", "email@mail.ru");
         userService.addUser(user);
-        TypedQuery<User> query = em.createQuery("SELECT u from User u where u.id = :id", User.class);
-        User userOut = query.setParameter("id", user.getId()).getSingleResult();
+        TypedQuery<User> query = em.createQuery("SELECT u from User u where u.email = :email", User.class);
+        User userOut = query.setParameter("email", user.getEmail()).getSingleResult();
         Item item = new Item(1, "itemName", "itemDescription", true, null, null,
                 null, null, null, null);
         itemService.addItem(item, userOut.getId());

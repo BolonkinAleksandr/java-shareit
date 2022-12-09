@@ -27,8 +27,8 @@ public class UserServiceIntegrationTest {
     void add() {
         var user = new User(1, "userName", "email@mail.ru");
         userService.addUser(user);
-        TypedQuery<User> query = em.createQuery("Select u from User u where u.id = :id", User.class);
-        var userOut = query.setParameter("id", user.getId()).getSingleResult();
+        TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
+        var userOut = query.setParameter("email", user.getEmail()).getSingleResult();
         assertThat(userOut.getId(), equalTo(user.getId()));
         assertThat(userOut.getName(), equalTo(user.getName()));
         assertThat(userOut.getEmail(), equalTo(user.getEmail()));
