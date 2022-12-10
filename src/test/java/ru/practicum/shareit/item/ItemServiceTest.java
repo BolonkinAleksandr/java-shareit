@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.CastomException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -83,8 +84,13 @@ public class ItemServiceTest {
     @Test
     void getAllItemsTest() {
         User user = new User(1, "name", "email@mail.ru");
+        /*Booking booking = new Booking(1, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), item, null, null);*/
         Item item = new Item(1, "name", "description", true, user,
                 null, null, null, null, null);
+        Booking booking1 = new Booking(1, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(2), item, null, null);
+        Booking booking2 = new Booking(2, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4), item, null, null);
+        item.setLastBooking(booking1);
+        item.setNextBooking(booking2);
         List<Item> items = new ArrayList<>();
         items.add(item);
         Page<Item> page = new PageImpl<>(items);
@@ -97,7 +103,7 @@ public class ItemServiceTest {
     void getItemByIdTest() {
         User user = new User(1, "name", "email@mail.ru");
         Item item = new Item(1, "name", "description", true, user,
-                null, null, null, null, null);
+                null, new Booking(), new Booking(), null, null);
         Mockito.when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
         Mockito.when(itemRepository.getReferenceById(Mockito.anyLong())).thenReturn(item);
         Assertions.assertEquals(1, itemService.getItemById(1, 1).getId());
@@ -214,6 +220,40 @@ public class ItemServiceTest {
                 Mockito.any())).thenReturn(booking);
         Mockito.when(commentRepository.save(Mockito.any())).thenReturn(comment);
         Assertions.assertEquals(1, itemService.createComment(comment, 1, 1).getId());
+    }
+
+    @Test
+    void testCreateEmptyComment() {
+        User user = new User(1, "name", "email@mail.ru");
+        Item item = new Item(1, "name", "description", true, user,
+                null, null, null, null, null);
+        Comment comment = new Comment(1, "", item, user, LocalDateTime.now());
+        Booking booking = new Booking(1, LocalDateTime.now(), LocalDateTime.now().plusDays(2), item, user, Status.APPROVED);
+        Mockito.when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
+        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        Mockito.when(bookingRepository.findBookingByBookerAndItemAndEndBefore(Mockito.any(), Mockito.any(),
+                Mockito.any())).thenReturn(booking);
+        Mockito.when(commentRepository.save(Mockito.any())).thenReturn(comment);
+        Throwable thrown = assertThrows(CastomException.class, () -> {
+            itemService.createComment(comment, 1, 4);
+        });
+        Assertions.assertEquals("comment is empty", thrown.getMessage());
+    }
+
+    @Test
+    void testCreateBadComment() {
+        User user = new User(1, "name", "email@mail.ru");
+        Item item = new Item(1, "name", "description", true, user,
+                null, null, null, null, null);
+        Comment comment = new Comment(1, "dsfrg", item, user, LocalDateTime.now());
+        Booking booking = new Booking(1, LocalDateTime.now(), LocalDateTime.now().plusDays(2), item, user, Status.APPROVED);
+        Mockito.when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
+        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
+        Mockito.when(commentRepository.save(Mockito.any())).thenReturn(comment);
+        Throwable thrown = assertThrows(CastomException.class, () -> {
+            itemService.createComment(comment, 1, 4);
+        });
+        Assertions.assertEquals("user can't commenting item that hasn't been booked", thrown.getMessage());
     }
 
     @Test

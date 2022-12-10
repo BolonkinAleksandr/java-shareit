@@ -17,9 +17,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.practicum.shareit.booking.mapper.BookingMapper.toBooking;
-import static ru.practicum.shareit.booking.mapper.BookingMapper.toBookingDto;
-import static ru.practicum.shareit.booking.mapper.BookingMapper.toBookingForItemDto;
+import static ru.practicum.shareit.booking.mapper.BookingMapper.*;
 
 @JsonTest
 public class BookingDtoTest {

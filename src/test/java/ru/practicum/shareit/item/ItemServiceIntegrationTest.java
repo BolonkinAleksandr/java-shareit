@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
@@ -36,7 +37,7 @@ public class ItemServiceIntegrationTest {
         TypedQuery<User> query = em.createQuery("SELECT u from User u where u.email = :email", User.class);
         User userOut = query.setParameter("email", user.getEmail()).getSingleResult();
         Item item = new Item(1, "itemName", "itemDescription", true, null, null,
-                null, null, null, null);
+                new Booking(), new Booking(), null, null);
         itemService.addItem(item, userOut.getId());
         TypedQuery<Item> query2 = em.createQuery("Select i from Item i where i.owner.id = :id", Item.class);
         Item itemOut = query2.setParameter("id", userOut.getId()).getSingleResult();
