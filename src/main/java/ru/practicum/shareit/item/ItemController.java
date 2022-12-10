@@ -38,8 +38,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemWithBookingDto> readAll(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                            @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
-                                            @RequestParam(name = "size", required = false) @Positive Integer size) {
+                                            @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                            @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         List<Item> items = itemService.getAllItems(ownerId, from, size);
         List<ItemWithBookingDto> dtoItems = new ArrayList<>();
         for (Item item : items) {
@@ -62,8 +62,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestParam(defaultValue = "") String text,
-                                    @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
-                                    @RequestParam(name = "size", required = false) @Positive Integer size) {
+                                    @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                    @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         if (text.isEmpty()) {
             return Collections.emptyList();
         }

@@ -49,8 +49,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getAllBookingsByUser(@RequestHeader(value = "X-Sharer-User-Id") long userId,
                                                  @RequestParam(defaultValue = "ALL") String state,
-                                                 @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
-                                                 @RequestParam(name = "size", required = false) @Positive Integer size) {
+                                                 @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                                 @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         List<BookingDto> bookingsDto = new ArrayList();
         State enumState;
         try {
@@ -68,8 +68,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingItemsByUser(@RequestHeader(value = "X-Sharer-User-Id") long userId,
                                                      @RequestParam(defaultValue = "ALL") String state,
-                                                     @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
-                                                     @RequestParam(name = "size", required = false) @Positive Integer size) {
+                                                     @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                                     @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         List<BookingDto> bookingsDto = new ArrayList();
         State enumState;
         try {

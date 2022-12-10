@@ -19,7 +19,6 @@ import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -60,15 +59,35 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getAllItems(long id, Integer from, Integer size) {
         log.info("get items by owner id={}", id);
         checkUserById(id);
-        List<Item> ownerItems = new ArrayList<>();
         Pageable pageable = pageableCreater.doPageable(from, size);
-        Page<Item> items = itemStorage.findAllItemsByOwnerId(id, pageable);
+        Page<Item> page = itemStorage.findAllItemsByOwnerId(id, pageable);
+        List<Booking> bookings = bookingRepository.findAll();
+        List<Item> items = page.toList();
         for (Item item : items) {
             if (item.getOwner().getId() == id) {
-                ownerItems.add(addItemBookings(item, id));
+                Booking lastBooking = null;
+                Booking nextBooking = null;
+                for (Booking booking : bookings) {
+                    if (booking.getItem().getId() == item.getId()) {
+                        if ((booking.getEnd().isAfter(LocalDateTime.now()) &&
+                                booking.getStart().isBefore(LocalDateTime.now())) ||
+                                booking.getEnd().isBefore(LocalDateTime.now())) {
+                            lastBooking = booking;
+                        }
+                    }
+                }
+                for (Booking booking : bookings) {
+                    if (booking.getItem().getId() == item.getId()) {
+                        if (booking.getStart().isAfter(LocalDateTime.now())) {
+                            nextBooking = booking;
+                        }
+                    }
+                }
+                item.setLastBooking(lastBooking);
+                item.setNextBooking(nextBooking);
             }
         }
-        return ownerItems;
+        return items;
     }
 
     @Override
