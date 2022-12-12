@@ -40,4 +40,6 @@ public class Item {
     private Booking nextBooking;
     @Transient
     private List<Comment> comments;
+    @Transient
+    private Long requestId;
 }

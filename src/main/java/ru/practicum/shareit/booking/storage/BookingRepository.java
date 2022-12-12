@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.storage;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
@@ -12,28 +14,34 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findBookingsByBookerAndEndBeforeOrderByStartDesc(User user, LocalDateTime localDateTime);
+    Page<Booking> findBookingsByBookerAndEndBeforeOrderByStartDesc(User user, LocalDateTime localDateTime,
+                                                                   Pageable pageable);
 
-    List<Booking> findBookingsByBookerAndStartBeforeAndEndAfterOrderByStartDesc(User user, LocalDateTime start, LocalDateTime end);
+    Page<Booking> findBookingsByBookerAndStartBeforeAndEndAfterOrderByStartDesc(User user, LocalDateTime start,
+                                                                                LocalDateTime end, Pageable pageable);
 
-    List<Booking> findBookingsByBookerOrderByStartDesc(User user);
+    Page<Booking> findBookingsByBookerOrderByStartDesc(User user, Pageable pageable);
 
-    List<Booking> findBookingsByBookerAndStartAfterOrderByStartDesc(User user, LocalDateTime localDateTime);
+    Page<Booking> findBookingsByBookerAndStartAfterOrderByStartDesc(User user, LocalDateTime localDateTime,
+                                                                    Pageable pageable);
 
-    List<Booking> findBookingsByBookerAndStatusOrderByStartDesc(User user, Status status);
+    Page<Booking> findBookingsByBookerAndStatusOrderByStartDesc(User user, Status status, Pageable pageable);
 
-    List<Booking> findBookingsByItem_OwnerOrderByStartDesc(User user);
+    Page<Booking> findBookingsByItem_OwnerOrderByStartDesc(User user, Pageable pageable);
 
-    List<Booking> findBookingsByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(User user, LocalDateTime start, LocalDateTime end);
+    Page<Booking> findBookingsByItem_OwnerAndStartBeforeAndEndAfterOrderByStartDesc(User user, LocalDateTime start,
+                                                                                    LocalDateTime end, Pageable pageable);
 
-    List<Booking> findBookingsByItem_OwnerAndEndBeforeOrderByStartDesc(User user, LocalDateTime localDateTime);
+    Page<Booking> findBookingsByItem_OwnerAndEndBeforeOrderByStartDesc(User user, LocalDateTime localDateTime,
+                                                                       Pageable pageable);
 
-    List<Booking> findBookingsByItem_OwnerAndStatusOrderByStartDesc(User user, Status status);
+    Page<Booking> findBookingsByItem_OwnerAndStatusOrderByStartDesc(User user, Status status, Pageable pageable);
 
     Booking findBookingByBookerAndItemAndEndBefore(User user, Item item, LocalDateTime localDateTime);
 
     List<Booking> findBookingsByItemOrderByStart(Item item);
 
-    List<Booking> findBookingsByItem_OwnerAndStartAfterOrderByStartDesc(User user, LocalDateTime localDateTime);
+    Page<Booking> findBookingsByItem_OwnerAndStartAfterOrderByStartDesc(User user, LocalDateTime localDateTime,
+                                                                        Pageable pageable);
 
 }

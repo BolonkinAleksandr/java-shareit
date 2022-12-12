@@ -9,12 +9,13 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.practicum.shareit.mapper.BookingMapper.toBooking;
-import static ru.practicum.shareit.mapper.BookingMapper.toBookingDto;
+import static ru.practicum.shareit.booking.mapper.BookingMapper.toBooking;
+import static ru.practicum.shareit.booking.mapper.BookingMapper.toBookingDto;
 
 @RestController
 @RequestMapping(path = "/bookings")
@@ -47,7 +48,9 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllBookingsByUser(@RequestHeader(value = "X-Sharer-User-Id") long userId,
-                                                 @RequestParam(defaultValue = "ALL") String state) {
+                                                 @RequestParam(defaultValue = "ALL") String state,
+                                                 @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                                 @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         List<BookingDto> bookingsDto = new ArrayList();
         State enumState;
         try {
@@ -55,7 +58,7 @@ public class BookingController {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        List<Booking> bookings = service.getAllBookingsByUser(enumState, userId);
+        List<Booking> bookings = service.getAllBookingsByUser(enumState, userId, from, size);
         for (Booking booking : bookings) {
             bookingsDto.add(toBookingDto(booking));
         }
@@ -64,7 +67,9 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingItemsByUser(@RequestHeader(value = "X-Sharer-User-Id") long userId,
-                                                     @RequestParam(defaultValue = "ALL") String state) {
+                                                     @RequestParam(defaultValue = "ALL") String state,
+                                                     @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                                     @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         List<BookingDto> bookingsDto = new ArrayList();
         State enumState;
         try {
@@ -72,7 +77,7 @@ public class BookingController {
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: " + state);
         }
-        List<Booking> bookings = service.getAllBookingItemsByUser(enumState, userId);
+        List<Booking> bookings = service.getAllBookingItemsByUser(enumState, userId, from, size);
         for (Booking booking : bookings) {
             bookingsDto.add(toBookingDto(booking));
         }
