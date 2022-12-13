@@ -95,7 +95,7 @@ public class ItemServiceTest {
         items.add(item);
         Page<Item> page = new PageImpl<>(items);
         Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-        Mockito.when(itemRepository.findAllItemsByOwnerId(Mockito.anyLong(), Mockito.any())).thenReturn(page);
+        Mockito.when(itemRepository.findAllItemsByOwnerIdOrderById(Mockito.anyLong(), Mockito.any())).thenReturn(page);
         Assertions.assertEquals(1, itemService.getAllItems(user.getId(), null, null).size());
     }
 

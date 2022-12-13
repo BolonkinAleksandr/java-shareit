@@ -60,7 +60,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("get items by owner id={}", id);
         checkUserById(id);
         Pageable pageable = pageableCreater.doPageable(from, size);
-        Page<Item> page = itemStorage.findAllItemsByOwnerId(id, pageable);
+        Page<Item> page = itemStorage.findAllItemsByOwnerIdOrderById(id, pageable);
         List<Booking> bookings = bookingRepository.findAll();
         List<Item> items = page.toList();
         for (Item item : items) {
